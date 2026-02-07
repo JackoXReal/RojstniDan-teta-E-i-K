@@ -1,7 +1,12 @@
 import os
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, send_from_directory
 
 app = Flask(__name__)
+
+# Potrebno za pravilno predvajanje glasbe na Renderju
+@app.route('/music.mp3')
+def serve_music():
+    return send_from_directory('.', 'music.mp3')
 
 HTML = """
 <!DOCTYPE html>
@@ -14,125 +19,125 @@ HTML = """
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            /* Zamenjane barve: Roza/Vijolična gradient */
-            background: linear-gradient(135deg, #f093fb, #f5576c);
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
-            overflow: hidden;
-        }
-
-        .container {
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
             padding: 20px;
+            box-sizing: border-box;
+            z-index: 2;
         }
 
         .card {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(14px);
-            border-radius: 25px;
-            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 50px 30px;
             max-width: 450px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            animation: fadeIn 2s ease;
-            border: 1px solid rgba(255,255,255,0.3);
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            animation: fadeIn 1.5s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
         }
 
         h1 {
-            font-size: 2.2em;
-            margin-bottom: 10px;
+            font-size: 2.5em;
+            margin-bottom: 15px;
             animation: float 3s ease-in-out infinite;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.2);
         }
 
         h2 {
             font-weight: 400;
-            margin-bottom: 25px;
-            font-size: 1.4em;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            opacity: 0.95;
         }
 
         p {
-            font-size: 1.15em;
-            line-height: 1.6;
-        }
-
-        .money {
-            margin: 25px 0;
             font-size: 1.2em;
-            font-weight: bold;
-            color: #fff;
-            background-color: rgba(0,0,0,0.1);
-            padding: 10px;
-            border-radius: 15px;
+            line-height: 1.7;
+            margin-bottom: 20px;
         }
 
         button {
-            margin-top: 25px;
-            padding: 15px 35px;
-            font-size: 1.1em;
+            margin-top: 15px;
+            padding: 16px 40px;
+            font-size: 1.2em;
             border: none;
-            border-radius: 30px;
-            /* Zamenjana barva gumba */
+            border-radius: 50px;
             background: #ffffff;
             color: #f5576c;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
 
         button:hover {
-            background: #ffe2e6;
-            transform: scale(1.08);
+            background: #ffffff;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
         }
 
-        footer {
-            margin-top: 30px;
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        /* Animacije */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
-        }
-
-        /* Confetti */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: red;
-            top: -10px;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
+        button:active {
+            transform: translateY(0);
         }
 
         .music {
-            margin-top: 15px;
-            font-size: 0.95em;
-            opacity: 0.85;
+            margin-top: 25px;
+            font-size: 0.9em;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 1.1em;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 20px;
+        }
+
+        /* Konfeti stil */
+        .confetti {
+            position: fixed;
+            z-index: 1;
+            top: -10px;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
 <audio id="bgMusic" src="/music.mp3"></audio>
+
 <div class="container">
     <div class="card">
         <h1>🎂 Srekjen Rodenden Teti!</h1>
@@ -142,7 +147,6 @@ HTML = """
             Vi posakuvam mnogu zdravje, srekja i ubavi momenti.<br>
         </p>
 
-
         <button onclick="celebrate()">Kliknete ovde ❤️</button>
 
         <div class="music">
@@ -151,7 +155,7 @@ HTML = """
 
         <footer>
             So mnogu ljubov,<br>
-            vasiot onuk Jacko 💙
+            <strong>vasiot onuk Jacko 💙</strong>
         </footer>
     </div>
 </div>
@@ -160,32 +164,37 @@ HTML = """
     function celebrate() {
         const music = document.getElementById("bgMusic");
         
-        // Preverimo, če glasba obstaja, preden jo predvajamo
         if(music) {
             music.volume = 0.5;
-            music.play().catch(error => console.log("Audio play failed (user interaction required or no source):", error));
+            music.play().catch(e => console.log("Audio Error:", e));
         }
 
-        // Množina v alert oknu
         alert("Ve sakam teti! ❤️ Srekjen 41-vi rodenden! 🎉");
-        createConfetti();
+        
+        for(let i=0; i<100; i++) {
+            createConfetti();
+        }
     }
 
-    // Confetti
     function createConfetti() {
-        const colors = ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7'];
+        const colors = ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7', '#ffd700'];
+        const conf = document.createElement("div");
+        conf.classList.add("confetti");
         
-        for (let i = 0; i < 100; i++) {
-            const conf = document.createElement("div");
-            conf.classList.add("confetti");
-            conf.style.left = Math.random() * 100 + "vw";
-            // Uporabi roza/rdeče barve za konfete
-            conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            conf.style.animationDuration = (Math.random() * 3 + 2) + "s";
-            document.body.appendChild(conf);
-
-            setTimeout(() => conf.remove(), 5000);
-        }
+        // Naključne lastnosti
+        const size = Math.random() * 10 + 5 + "px";
+        conf.style.width = size;
+        conf.style.height = (Math.random() > 0.5 ? size : (Math.random() * 5 + 2 + "px")); // Različne oblike
+        conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+        
+        // Animacija
+        const duration = Math.random() * 3 + 2;
+        conf.style.animation = `fall ${duration}s linear forwards`;
+        
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), duration * 1000);
     }
 </script>
 
@@ -199,6 +208,6 @@ def home():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-
     app.run(host="0.0.0.0", port=port)
+
 
