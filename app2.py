@@ -140,8 +140,8 @@ HTML = """
 
 <div class="container">
     <div class="card">
-        <h1>🎂 Srekjen Rodenden Teta Elena i Teta Kate!</h1>
-        <h2>Denes polnite 41 godini 🥳</h2>
+        <h1>🎂 Srekjen Rodenden Teta Elena i Teta Kate!🎂</h1>
+        <h2>Denes polnite 41 godina 🥳</h2>
 
         <p>
             Vi posakuvam mnogu zdravje, srekja i ubavi momenti.<br>
@@ -209,6 +209,7 @@ def home():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
