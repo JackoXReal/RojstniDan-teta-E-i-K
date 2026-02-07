@@ -132,7 +132,7 @@ HTML = """
 </head>
 <body>
 
-<audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<audio id="bgMusic" src="/music.mp3"></audio>
 <div class="container">
     <div class="card">
         <h1>🎂 Srekjen Rodenden Teti!</h1>
@@ -201,3 +201,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
 
     app.run(host="0.0.0.0", port=port)
+
