@@ -27,7 +27,7 @@ HTML = """
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .container {
@@ -35,6 +35,7 @@ HTML = """
             padding: 20px;
             box-sizing: border-box;
             z-index: 2;
+            position: relative;
         }
 
         .card {
@@ -49,6 +50,8 @@ HTML = """
             animation: fadeIn 1.5s ease-out;
             border: 1px solid rgba(255, 255, 255, 0.3);
             text-align: center;
+            position: relative;
+            z-index: 5; /* Kartica je spodaj */
         }
 
         h1 {
@@ -83,6 +86,8 @@ HTML = """
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 10; /* Gumb mora biti zgoraj, da se ga da kliknit */
         }
 
         button:hover {
@@ -109,13 +114,13 @@ HTML = """
             padding-top: 20px;
         }
 
-        /* Konfeti stil */
+        /* Konfeti v OSPREDJU */
         .confetti {
             position: fixed;
-            z-index: 1;
-            top: -10px;
+            z-index: 9999; /* To jih postavi ČEZ besedilo */
+            top: -20px;
             user-select: none;
-            pointer-events: none;
+            pointer-events: none; /* Pomembno: konfeti ne smejo blokirati klikov */
         }
 
         @keyframes fadeIn {
@@ -129,8 +134,14 @@ HTML = """
         }
 
         @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+            0% { 
+                transform: translateY(0) rotate(0deg) translateX(0); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(110vh) rotate(720deg) translateX(20px); 
+                opacity: 0; 
+            }
         }
     </style>
 </head>
@@ -155,7 +166,7 @@ HTML = """
 
         <footer>
             So mnogu ljubov,<br>
-            <strong>vasiot Jacko 💙</strong>
+            <strong>vasiot onuk Jacko 💙</strong>
         </footer>
     </div>
 </div>
@@ -171,26 +182,25 @@ HTML = """
 
         alert("Ve sakam teti! ❤️ Srekjen 41-vi rodenden! 🎉");
         
-        for(let i=0; i<100; i++) {
-            createConfetti();
+        // Več konfetov za boljši učinek v ospredju
+        for(let i=0; i<150; i++) {
+            setTimeout(createConfetti, i * 10);
         }
     }
 
     function createConfetti() {
-        const colors = ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7', '#ffd700'];
+        const colors = ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7', '#ffd700', '#ffffff'];
         const conf = document.createElement("div");
         conf.classList.add("confetti");
         
-        // Naključne lastnosti
-        const size = Math.random() * 10 + 5 + "px";
+        const size = Math.random() * 12 + 6 + "px";
         conf.style.width = size;
-        conf.style.height = (Math.random() > 0.5 ? size : (Math.random() * 5 + 2 + "px")); // Različne oblike
+        conf.style.height = (Math.random() > 0.5 ? size : (Math.random() * 6 + 3 + "px"));
         conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         conf.style.left = Math.random() * 100 + "vw";
         conf.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
         
-        // Animacija
-        const duration = Math.random() * 3 + 2;
+        const duration = Math.random() * 3 + 2.5;
         conf.style.animation = `fall ${duration}s linear forwards`;
         
         document.body.appendChild(conf);
@@ -209,7 +219,3 @@ def home():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
-
-
-
